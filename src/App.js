@@ -50,20 +50,22 @@ const DEFAULT_STATE = {
   "after": null,
   "last": null,
   "before": null,
-  "query": "フロントエンドエンジニア"
+  "query": ""
 }
 class App extends Component {
   constructor(props){
     super(props)
     this.state = DEFAULT_STATE
 
-    this.handleChange = this.handleChange.bind(this)
+    this.myRef = React.createRef()
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  handleChange(event) {
+  handleSubmit(event) {
+
+    event.preventDefault()
     this.setState({
-      ...DEFAULT_STATE,
-      query: event.target.value
+      query: this.myRef.current.value
     })
   }
 
@@ -90,8 +92,9 @@ class App extends Component {
     return ( 
       <ApolloProvider client={client}>
         <div>Hello, GraphQL</div>
-        <form>
-          <input value={query} onChange={this.handleChange} />
+        <form onSubmit={this.handleSubmit}>
+          <input ref={this.myRef} />
+          <input type="submit" value="Submit" />
         </form>
         <Query
           query={ SEARCH_REPOSITORIES }
