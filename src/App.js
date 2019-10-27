@@ -1,31 +1,56 @@
 import React, { Component } from 'react'
 import { ApolloProvider } from 'react-apollo'
-import gql from 'graphql-tag'
 import { Query } from 'react-apollo'
 import client from './client'
+import { SEARCH_REPOSITORIES } from './graphql'
 
-const ME = gql`
-  query me {
-    user(login: "k7en") {
-      name
-      avatarUrl
-    }
-  }
-`
 
+const DEFAULT_STATE = {
+  "first": 5,
+  "after": null,
+  "last": null,
+  "before": null,
+  "query": "フロントエンドエンジニア"
+}
 class App extends Component {
+  constructor(props){
+    super(props)
+    this.state = DEFAULT_STATE
+
+    this.handleChange = this.handleChange.bind(this)
+  }
+
+  handleChange(event) {
+    this.setState({
+      ...DEFAULT_STATE,
+      query: event.target.value
+    })
+  }
   render() {
-    return (
+    const { query, first, last, before, after } = this.state
+    console.log({query})
+
+    return ( 
       <ApolloProvider client={client}>
         <div>Hello, GraphQL</div>
-
-        <Query query={ME}>
+        <form>
+          <input value={query} onChange={this.handleChange} />
+        </form>
+        <Query
+          query={ SEARCH_REPOSITORIES }
+          variables={{ query, first, last, before, after }}
+          >
           {
             ({ loading, error, data }) => {
               if (loading) return 'Loading...'
               if (error) return `Error! ${error.message}`
-
-              return <div>{data.user.name}</div>
+              console.log({data})
+              
+              const search = data.search
+              const repositoryCount = search.repositoryCount
+              const repositoryUnit = repositoryCount === 1 ? 'Repository' : 'Repositories'
+              const title = `Github Repo Search Result -  ${ repositoryCount} ${ repositoryUnit }`
+              return <h2>{title}</h2>
             }
           }
         </Query>
