@@ -1,26 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import { ApolloProvider } from 'react-apollo'
+import gql from 'graphql-tag'
+import { Query } from 'react-apollo'
+import client from './client'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const ME = gql`
+  query me {
+    user(login: "k7en") {
+      name
+      avatarUrl
+    }
+  }
+`
+
+class App extends Component {
+  render() {
+    return (
+      <ApolloProvider client={client}>
+        <div>Hello, GraphQL</div>
+
+        <Query query={ME}>
+          {
+            ({ loading, error, data }) => {
+              if (loading) return 'Loading...'
+              if (error) return `Error! ${error.message}`
+
+              return <div>{data.user.name}</div>
+            }
+          }
+        </Query>
+      </ApolloProvider>
+    )
+  }
 }
 
-export default App;
+export default App
