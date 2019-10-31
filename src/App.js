@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { ApolloProvider, Mutation,  Query } from 'react-apollo'
 import client from './client'
 import { ADD_STAR, REMOVE_STAR, SEARCH_REPOSITORIES } from './graphql'
+import {Button, FormControl, TextField}  from '@material-ui/core';
 
-import { form } from 'zen-observable';
+// import { form } from 'zen-observable';
 
 const StarButton = props => {
   const { node, query, first, last, before, after } = props
@@ -12,7 +13,7 @@ const StarButton = props => {
   const starCount = totalCount === 1 ? `1 Star` : `${totalCount} Stars`
   const StarStatus = ({arStar}) => {
     return (
-      <button
+      <Button 
         onClick = {
           () => {
             arStar({
@@ -22,7 +23,7 @@ const StarButton = props => {
         }
       >
       {starCount} | {viewerHasStarred ? 'Starred' : '-'}
-      </button>
+      </Button>
     )
   }
   return (
@@ -50,7 +51,7 @@ const DEFAULT_STATE = {
   "after": null,
   "last": null,
   "before": null,
-  "query": "フロントエンドエンジニア"
+  "query": "Deep learning"
 }
 class App extends Component {
   constructor(props){
@@ -89,10 +90,11 @@ class App extends Component {
 
     return ( 
       <ApolloProvider client={client}>
-        <div>Hello, GraphQL</div>
-        <form>
-          <input value={query} onChange={this.handleChange} />
-        </form>
+        <div><h1>Hello,Github　GraphQLサーチ！</h1></div>
+        <hr></hr>
+        <FormControl>
+          <TextField label="検索したいワード" margin="normal" value={query} onChange={this.handleChange} />
+        </FormControl>
         <Query
           query={ SEARCH_REPOSITORIES }
           variables={{ query, first, last, before, after }}
@@ -126,21 +128,21 @@ class App extends Component {
                   </ul>
                   {
                       search.pageInfo.hasPreviousPage === true ? 
-                        <button
+                        <Button variant="contained" color="primary"
                           onClick={this.goPrevious.bind(this, search)}
                         >
                         Previous
-                        </button>
+                        </Button>
                       :
                       null  
                     }
                     {
                       search.pageInfo.hasNextPage === true ? 
-                        <button
+                        <Button variant="contained" color="primary"
                           onClick={this.goNext.bind(this, search)}
                         >
                         Next
-                        </button>
+                        </Button>
                       :
                       null  
                     }
