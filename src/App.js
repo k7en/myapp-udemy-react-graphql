@@ -58,13 +58,15 @@ class App extends Component {
     super(props)
     this.state = DEFAULT_STATE
 
-    this.handleChange = this.handleChange.bind(this)
+    this.myRef = React.createRef()
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  handleChange(event) {
+  handleSubmit(event) {
+
+    event.preventDefault()
     this.setState({
-      ...DEFAULT_STATE,
-      query: event.target.value
+      query: this.myRef.current.value
     })
   }
 
@@ -90,6 +92,7 @@ class App extends Component {
 
     return ( 
       <ApolloProvider client={client}>
+
         <div><h1>Hello,Github　GraphQLサーチ！</h1></div>
         <hr></hr>
         <FormControl>
